@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MicroLM — A micro transformer language model trained on stock exchange and financial text. Built with TensorFlow / Keras.">
+    <title>MicroLM — Stock Exchange Language Model (TensorFlow / Keras)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=4">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- Header -->
+    <header class="header" id="appHeader">
+        <div class="header-content">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+                        <path d="M8 22L12 14L16 18L20 10L24 16" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
+                                <stop stop-color="#00D4AA"/>
+                                <stop offset="1" stop-color="#0088FF"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="logo-text">MicroLM</h1>
+                    <p class="logo-subtitle">Stock Exchange Language Model</p>
+                </div>
+            </div>
+            <div class="header-badge">
+                <span class="badge-dot"></span>
+                <span>TensorFlow / Keras</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Left Panel: Controls & Generation -->
+        <div class="panel-left">
+            <!-- Prompt Input -->
+            <section class="card card-prompt" id="promptSection">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">✨</span>
+                        Text Generation
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <!-- Note for users about text completion -->
+                    <div style="background: rgba(0, 212, 170, 0.08); border: 1px solid rgba(0, 212, 170, 0.25); border-radius: 8px; padding: 0.6rem 0.9rem; margin-bottom: 0.9rem; font-size: 0.85rem; color: #a0aec0; line-height: 1.4;">
+                        <strong style="color: #00d4aa;">ℹ️ Note:</strong> MicroLM is a causal text-completion model. It continues sentences (e.g. <em>"The Federal Reserve announced"</em> or <em>"The stock market"</em>), rather than answering questions.
+                    </div>
+
+                    <label class="input-label" for="promptInput">Prompt</label>
+                    <textarea
+                        id="promptInput"
+                        class="prompt-textarea"
+                        placeholder="Enter a financial prompt... e.g., 'The stock market is showing signs of'"
+                        rows="3"
+                    >The stock market</textarea>
+
+                    <!-- Controls -->
+                    <div class="controls-grid">
+                        <div class="control-item">
+                            <label class="control-label" for="temperatureSlider">
+                                Temperature
+                                <span class="control-value" id="tempValue">0.65</span>
+                            </label>
+                            <input type="range" id="temperatureSlider" class="slider"
+                                   min="0.1" max="2.0" step="0.05" value="0.65">
+                            <div class="slider-labels">
+                                <span>Focused</span>
+                                <span>Creative</span>
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <label class="control-label" for="topKSlider">
+                                Top-K
+                                <span class="control-value" id="topKValue">30</span>
+                            </label>
+                            <input type="range" id="topKSlider" class="slider"
+                                   min="1" max="100" step="1" value="30">
+                            <div class="slider-labels">
+                                <span>Precise</span>
+                                <span>Diverse</span>
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <label class="control-label" for="topPSlider">
+                                Top-P (Nucleus)
+                                <span class="control-value" id="topPValue">0.85</span>
+                            </label>
+                            <input type="range" id="topPSlider" class="slider"
+                                   min="0.1" max="1.0" step="0.05" value="0.85">
+                            <div class="slider-labels">
+                                <span>Tight</span>
+                                <span>Broad</span>
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <label class="control-label" for="repPenaltySlider">
+                                Rep. Penalty
+                                <span class="control-value" id="repValue">1.08</span>
+                            </label>
+                            <input type="range" id="repPenaltySlider" class="slider"
+                                   min="1.0" max="1.5" step="0.01" value="1.08">
+                            <div class="slider-labels">
+                                <span>1.0 (None)</span>
+                                <span>1.5 (High)</span>
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <label class="control-label" for="ngramSlider">
+                                N-Gram Block
+                                <span class="control-value" id="ngramValue">3</span>
+                            </label>
+                            <input type="range" id="ngramSlider" class="slider"
+                                   min="0" max="5" step="1" value="3">
+                            <div class="slider-labels">
+                                <span>0 (Off)</span>
+                                <span>3 (Strict)</span>
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <label class="control-label" for="maxLengthSlider">
+                                Max Length
+                                <span class="control-value" id="lengthValue">120</span>
+                            </label>
+                            <input type="range" id="maxLengthSlider" class="slider"
+                                   min="50" max="500" step="25" value="120">
+                            <div class="slider-labels">
+                                <span>Short</span>
+                                <span>Long</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="generateBtn" class="btn-generate" onclick="generateText()">
+                        <span class="btn-icon">⚡</span>
+                        <span class="btn-text">Generate</span>
+                        <span class="btn-loading" style="display:none;">
+                            <span class="spinner"></span>
+                            Generating...
+                        </span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Output -->
+            <section class="card card-output" id="outputSection">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">📝</span>
+                        Generated Output
+                    </h2>
+                    <button class="btn-copy" id="copyBtn" onclick="copyOutput()" style="display:none;">
+                        <span>📋 Copy</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="outputArea" class="output-area">
+                        <div class="output-placeholder">
+                            <div class="placeholder-icon">📈</div>
+                            <p>Generated text will appear here</p>
+                            <p class="placeholder-hint">Enter a prompt above and click Generate</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Panel: Model Info & Charts -->
+        <div class="panel-right">
+            <!-- Model Info Card -->
+            <section class="card card-info" id="modelInfoSection">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🧠</span>
+                        Model Architecture
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div id="modelInfoContent" class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Status</span>
+                            <span class="info-value loading-pulse">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Training Metrics Card -->
+            <section class="card card-chart" id="chartSection">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">📊</span>
+                        Training Metrics
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="lossChart"></canvas>
+                    </div>
+                    <div class="chart-container" style="margin-top: 1rem;">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Prompts -->
+            <section class="card card-prompts" id="quickPromptsSection">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">💡</span>
+                        Quick Prompts
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-prompts-grid">
+                        <button class="quick-prompt" onclick="setPrompt('The stock market')">
+                            The stock market...
+                        </button>
+                        <button class="quick-prompt" onclick="setPrompt('The Federal Reserve announced')">
+                            The Federal Reserve announced...
+                        </button>
+                        <button class="quick-prompt" onclick="setPrompt('Investors are closely watching')">
+                            Investors are closely watching...
+                        </button>
+                        <button class="quick-prompt" onclick="setPrompt('Earnings reports indicate that')">
+                            Earnings reports indicate that...
+                        </button>
+                        <button class="quick-prompt" onclick="setPrompt('Technical analysis suggests that')">
+                            Technical analysis suggests that...
+                        </button>
+                        <button class="quick-prompt" onclick="setPrompt('The price-to-earnings ratio')">
+                            The price-to-earnings ratio...
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>MicroLM — Micro Language Model for Stock Exchange • Built with TensorFlow / Keras &amp; Flask</p>
+        <p class="footer-disclaimer">⚠️ Text-completion model for educational demonstration only. Not financial advice.</p>
+    </footer>
+
+    <script src="/static/script.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "loss": [
+    6.595855236053467,
+    2.3508012294769287,
+    0.9220807552337646,
+    0.6531006693840027
+  ],
+  "accuracy": [
+    0.15119969844818115,
+    0.6346208453178406,
+    0.8565688133239746,
+    0.9020612835884094
+  ],
+  "val_loss": [
+    3.5148074626922607,
+    1.1710187196731567,
+    0.6766282916069031,
+    0.6047828197479248
+  ],
+  "val_accuracy": [
+    0.49277278780937195,
+    0.7969768047332764,
+    0.876959502696991,
+    0.884288489818573
+  ],
+  "val_perplexity": 1.83,
+  "best_val_loss": 0.6048,
+  "epochs_completed": 4,
+  "training_time_seconds": 551.1,
+  "corpus_tokens": 393476,
+  "model_params": 4472320,
+  "tokens_per_param": 0.09,
+  "config": {
+    "vocab_size": 5000,
+    "embed_dim": 256,
+    "num_heads": 4,
+    "num_layers": 4,
+    "ff_dim": 1024,
+    "seq_length": 128,
+    "dropout": 0.1,
+    "batch_size": 64,
+    "epochs": 4,
+    "learning_rate": 0.00035,
+    "warmup_steps": 100,
+    "min_lr": 1e-05,
+    "weight_decay": 0.01,
+    "val_split": 0.1,
+    "patience": 4,
+    "max_minutes": 60.0,
+    "default_temperature": 0.65,
+    "default_top_k": 30,
+    "default_top_p": 0.85,
+    "repetition_penalty": 1.08,
+    "no_repeat_ngram_size": 3,
+    "repetition_window": 128,
+    "default_max_length": 120,
+    "checkpoint_dir": "checkpoints",
+    "history_path": "training_history.json"
+  }
+}
